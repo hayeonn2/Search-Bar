@@ -7,7 +7,7 @@ import App from '@/app/App';
 
 const container = document.getElementById('root');
 
-createRoot(container).render(
+createRoot(container as HTMLElement).render(
   <StrictMode>
     <App />
   </StrictMode>,

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run dev -- --open",
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc --build",
     "lint": "eslint src --ext .tsx,.ts,.jsx,.js",
     "lint:fix": "npm run lint -- --fix",
     "preview": "vite preview"
@@ -14,7 +14,8 @@
   "dependencies": {
     "axios": "^1.4.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "typescript": "^5.1.6"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
@@ -26,6 +27,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "prettier": "^2.8.8",
+    "ts-node": "^10.9.1",
     "vite": "^4.3.4"
   }
 }

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 export function SearchBar() {
-  const [sickList, setSickList] = useState([]);
+  //const [sickList, setSickList] = useState([]);
 
   const getData = async () => {
     try {
@@ -12,7 +12,7 @@ export function SearchBar() {
         },
       });
       console.log(response.data);
-      setSickList(response.data);
+      //setSickList(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -24,12 +24,10 @@ export function SearchBar() {
 
   return (
     <div>
-      {sickList.map((item) => (
-        <li key={item.sickCd}>
-          <span>{item.sickCd}</span>
-          <span>{item.sickNm}</span>
-        </li>
-      ))}
+      <form>
+        <input type="text" placeholder="질환명을 입력해주세요." />
+        <button type="submit">검색하기</button>
+      </form>
     </div>
   );
 }
