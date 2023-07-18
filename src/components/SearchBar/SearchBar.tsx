@@ -43,11 +43,16 @@ export function SearchBar() {
 
       <ResultsContainer>
         <RecommendTitle>추천 검색어</RecommendTitle>
-        {limitedList?.map((value) => (
-          <ResultsList key={value.sickCd}>
-            <a href="/">{value.sickNm}</a>
-          </ResultsList>
-        ))}
+
+        {limitedList && limitedList.length > 0 ? (
+          limitedList.map((value) => (
+            <ResultsList key={value.sickCd}>
+              <a href="/">{value.sickNm}</a>
+            </ResultsList>
+          ))
+        ) : (
+          <NoRecommend>검색어가 없습니다.</NoRecommend>
+        )}
       </ResultsContainer>
     </Container>
   );
@@ -104,4 +109,7 @@ const ResultsList = styled.li`
   &:last-child {
     margin-bottom: 5px;
   }
+`;
+const NoRecommend = styled.li`
+  color: #555;
 `;
