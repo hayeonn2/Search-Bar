@@ -4,11 +4,14 @@ import '@/styles/global.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from '@/app/App';
+import { SickProvider } from './contexts/sickContext';
 
 const container = document.getElementById('root');
 
 createRoot(container as HTMLElement).render(
   <StrictMode>
-    <App />
+    <SickProvider>
+      <App />
+    </SickProvider>
   </StrictMode>,
 );
