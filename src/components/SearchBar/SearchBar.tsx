@@ -9,16 +9,21 @@ export function SearchBar() {
     sickContext,
   ) as SearchContextType;
   const [inputValue, setInputValue] = useState<string>('');
+  const debounceText = useDebounce(inputValue, 300);
 
-  const onInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (debounceText) {
+      fetchRecommendData(debounceText);
+      console.log(debounceText);
+    }
+  }, [debounceText]);
+
+  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     if (e.target.value === '') {
-      // 빈문자일때 아무것도 없이 리턴해줌
       fetchRecommendData('');
       return;
     }
-    console.log(e.target.value);
-    await fetchRecommendData(e.target.value);
   };
 
   return (
@@ -48,26 +53,19 @@ export function SearchBar() {
 }
 
 const Container = styled.div`
-  /* background-color: pink; */
-  /* text-align: center; */
   width: 500px;
   margin: 120px auto 0;
 `;
 
 const Form = styled.form`
-  /* background-color: skyblue; */
   position: relative;
-
-  /* outline: 2px solid blue; */
 `;
 
 const SearchLabel = styled.label`
-  /* position: relative; */
   display: flex;
   background-color: #fff;
   border-radius: 60px;
   padding: 20px 30px;
-  /* outline: 2px solid red; */
   box-shadow: 0px 2px 4px rgba(30, 32, 37, 0.1);
 `;
 
@@ -90,7 +88,6 @@ const SearchButton = styled.button`
 `;
 
 const ResultsContainer = styled.ul`
-  /* outline: 2px solid red; */
   margin: 10px auto 0;
   background: #fff;
   border-radius: 15px;
