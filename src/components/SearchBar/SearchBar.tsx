@@ -10,6 +10,7 @@ export function SearchBar() {
   ) as SearchContextType;
   const [inputValue, setInputValue] = useState<string>('');
   const debounceText = useDebounce(inputValue, 300);
+  const limitedList = recommendValue?.slice(0, 7);
 
   useEffect(() => {
     if (debounceText) {
@@ -42,7 +43,7 @@ export function SearchBar() {
 
       <ResultsContainer>
         <RecommendTitle>추천 검색어</RecommendTitle>
-        {recommendValue?.map((value) => (
+        {limitedList?.map((value) => (
           <ResultsList key={value.sickCd}>
             <a href="/">{value.sickNm}</a>
           </ResultsList>
