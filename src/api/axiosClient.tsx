@@ -12,7 +12,9 @@ export const getData = async (
         'Content-Type': 'application/json',
       },
     });
-    return response.data;
+    return response.data.filter((item: RecommendValueType) =>
+      item.sickNm.startsWith(search),
+    );
   } catch (err) {
     console.log(err);
   }
