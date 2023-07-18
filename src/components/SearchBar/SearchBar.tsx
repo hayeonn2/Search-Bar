@@ -9,6 +9,7 @@ export function SearchBar() {
     sickContext,
   ) as SearchContextType;
   const [inputValue, setInputValue] = useState<string>('');
+  const [isFocused, setIsFocused] = useState<Boolean>(false);
   const debounceText = useDebounce(inputValue, 300);
   const limitedList = recommendValue?.slice(0, 7);
 
@@ -27,6 +28,12 @@ export function SearchBar() {
     }
   };
 
+  const handleFocus = () => {
+    setIsFocused((prev) => {
+      return !prev;
+    });
+  };
+
   return (
     <Container>
       <Form>
@@ -36,24 +43,28 @@ export function SearchBar() {
             placeholder="질환명을 입력해주세요."
             value={inputValue}
             onChange={onInputChange}
+            onFocus={handleFocus}
+            onBlur={handleFocus}
           />
           <SearchButton type="submit">검색</SearchButton>
         </SearchLabel>
       </Form>
 
-      <ResultsContainer>
-        <RecommendTitle>추천 검색어</RecommendTitle>
+      {isFocused ? (
+        <ResultsContainer>
+          <RecommendTitle>추천 검색어</RecommendTitle>
 
-        {limitedList && limitedList.length > 0 ? (
-          limitedList.map((value) => (
-            <ResultsList key={value.sickCd}>
-              <a href="/">{value.sickNm}</a>
-            </ResultsList>
-          ))
-        ) : (
-          <NoRecommend>검색어가 없습니다.</NoRecommend>
-        )}
-      </ResultsContainer>
+          {limitedList && limitedList.length > 0 ? (
+            limitedList.map((value) => (
+              <ResultsList key={value.sickCd}>
+                <a href="/">{value.sickNm}</a>
+              </ResultsList>
+            ))
+          ) : (
+            <NoRecommend>검색어가 없습니다.</NoRecommend>
+          )}
+        </ResultsContainer>
+      ) : null}
     </Container>
   );
 }
