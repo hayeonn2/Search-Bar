@@ -12,7 +12,6 @@ type RecommendValueType = {
 
 type SearchContextType = {
   recommendValue: RecommendValueType[] | undefined;
-  // 리턴안하면 <void>
   fetchRecommendData: (
     value: string,
   ) => Promise<RecommendValueType[] | undefined>;
@@ -28,6 +27,9 @@ function SickProvider({ children }: SickProviderProps) {
   const fetchRecommendData = async (search: string) => {
     try {
       let data = await getData(search);
+      if (search === '') {
+        data = [];
+      }
       console.info('calling api');
       setRecommendValue(data);
       return data;
