@@ -9,34 +9,98 @@ export function SearchBar() {
     sickContext,
   ) as SearchContextType;
   const [inputValue, setInputValue] = useState<string>('');
-  const [isFocused, setIsFocused] = useState<Boolean>(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [selectedIdx, setSelectedIdx] = useState<number>(-1);
   const debounceText = useDebounce(inputValue, 300);
-  const limitedList = recommendValue?.slice(0, 7);
 
+  // debounce
   useEffect(() => {
-    if (debounceText) {
-      fetchRecommendData(debounceText);
-      console.log(debounceText);
-    }
+    const fetchData = async () => {
+      if (debounceText) {
+        await fetchRecommendData(debounceText);
+        console.log(debounceText);
+      }
+    };
+
+    fetchData();
   }, [debounceText]);
 
-  const onInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  // Input change event
+  const onInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+
     if (e.target.value === '') {
-      fetchRecommendData('');
+      await fetchRecommendData('');
       return;
     }
   };
 
+  // input창 focus event
   const handleFocus = () => {
     setIsFocused((prev) => {
       return !prev;
     });
   };
 
+  // 검색 후 setSearchHistory에 현재값과 이전에 있던 값을 배열로 추천검색어에 보여주는 것
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (inputValue.trim() !== '') {
+      setSearchHistory((prevSearchHistory) => [
+        ...prevSearchHistory,
+        inputValue,
+      ]);
+    }
+  };
+
+  // 추천 검색어 키로 이동하도록 구현
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIdx((prevIdx) =>
+        prevIdx > 0
+          ? prevIdx - 1
+          : recommendValue?.length
+          ? recommendValue.length - 1
+          : 0,
+      );
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIdx((prevIdx) =>
+        prevIdx < recommendValue?.length - 1 ? prevIdx + 1 : 0,
+      );
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (selectedIdx !== -1 && recommendValue) {
+        // 선택된 추천 검색어 처리
+        const selectedSearchTerm = recommendValue[selectedIdx];
+        setInputValue(selectedSearchTerm.sickNm);
+      }
+    }
+  };
+
+  // 컴포넌트 마운트 시 로컬 스토리지에서 검색 기록 가져오기
+  useEffect(() => {
+    const storedSearchHistory = localStorage.getItem('searchHistory');
+    if (storedSearchHistory) {
+      setSearchHistory(JSON.parse(storedSearchHistory));
+    }
+  }, []);
+
+  // 검색 기록이 변경될 때마다 로컬 스토리지에 저장
+  useEffect(() => {
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+  }, [searchHistory]);
+
   return (
     <Container>
-      <Form>
+      <Title>
+        국내 모든 임상시험 검색하고
+        <br /> 온라인으로 참여하기
+      </Title>
+      <Form onSubmit={handleSearch}>
         <SearchLabel>
           <SearchInput
             type="text"
@@ -45,6 +109,7 @@ export function SearchBar() {
             onChange={onInputChange}
             onFocus={handleFocus}
             onBlur={handleFocus}
+            onKeyDown={handleKeyDown}
           />
           <SearchButton type="submit">검색</SearchButton>
         </SearchLabel>
@@ -54,11 +119,23 @@ export function SearchBar() {
         <ResultsContainer>
           <RecommendTitle>추천 검색어</RecommendTitle>
 
-          {limitedList && limitedList.length > 0 ? (
-            limitedList.map((value) => (
-              <ResultsList key={value.sickCd}>
+          {recommendValue && recommendValue.length > 0 ? (
+            recommendValue.map((value, idx) => (
+              <ResultsList
+                key={value.sickCd}
+                style={{
+                  backgroundColor:
+                    selectedIdx === idx ? '#f1f1f1' : 'transparent',
+                }}
+              >
                 <a href="/">{value.sickNm}</a>
               </ResultsList>
+            ))
+          ) : searchHistory.length > 0 ? (
+            searchHistory.map((value, idx) => (
+              <NoRecommend key={idx}>
+                <a href="/">{value}</a>
+              </NoRecommend>
             ))
           ) : (
             <NoRecommend>검색어가 없습니다.</NoRecommend>
@@ -72,6 +149,14 @@ export function SearchBar() {
 const Container = styled.div`
   width: 500px;
   margin: 120px auto 0;
+`;
+
+const Title = styled.h1`
+  font-size: 34px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 25px;
+  line-height: 1.4;
 `;
 
 const Form = styled.form`
@@ -108,19 +193,16 @@ const ResultsContainer = styled.ul`
   margin: 10px auto 0;
   background: #fff;
   border-radius: 15px;
-  padding: 20px 30px;
+  padding: 10px 0 20px;
 `;
 const RecommendTitle = styled.li`
   color: #999;
   font-size: 14px;
-  margin-bottom: 18px;
+  padding: 15px 30px;
 `;
 const ResultsList = styled.li`
-  margin-bottom: 25px;
-  &:last-child {
-    margin-bottom: 5px;
-  }
+  padding: 12px 30px;
 `;
 const NoRecommend = styled.li`
-  color: #555;
+  padding: 12px 30px;
 `;

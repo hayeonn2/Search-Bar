@@ -11,30 +11,26 @@ type RecommendValueType = {
 };
 
 type SearchContextType = {
-  recommendValue: RecommendValueType[] | undefined;
-  fetchRecommendData: (
-    value: string,
-  ) => Promise<RecommendValueType[] | undefined>;
+  recommendValue: RecommendValueType[];
+  fetchRecommendData: (value: string) => Promise<RecommendValueType[]>;
 };
 
 export const sickContext = createContext<SearchContextType | null>(null);
 
 function SickProvider({ children }: SickProviderProps) {
-  const [recommendValue, setRecommendValue] = useState<
-    RecommendValueType[] | undefined
-  >([]);
+  const [recommendValue, setRecommendValue] = useState<RecommendValueType[]>(
+    [],
+  );
 
   const fetchRecommendData = async (search: string) => {
     try {
       let data = await getData(search);
-      if (search === '') {
-        data = [];
-      }
       console.info('calling api');
       setRecommendValue(data);
       return data;
     } catch (error) {
       console.log(error);
+      return [];
     }
   };
 
