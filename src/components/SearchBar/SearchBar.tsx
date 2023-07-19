@@ -116,31 +116,38 @@ export function SearchBar() {
       </Form>
 
       {isFocused ? (
-        <ResultsContainer>
-          <RecommendTitle>추천 검색어</RecommendTitle>
-
+        <>
           {recommendValue && recommendValue.length > 0 ? (
-            recommendValue.map((value, idx) => (
-              <ResultsList
-                key={value.sickCd}
-                style={{
-                  backgroundColor:
-                    selectedIdx === idx ? '#f1f1f1' : 'transparent',
-                }}
-              >
-                <a href="/">{value.sickNm}</a>
-              </ResultsList>
-            ))
+            <ResultsContainer>
+              <RecommendTitle>추천 검색어</RecommendTitle>
+              {recommendValue.map((value, idx) => (
+                <ResultsList
+                  key={value.sickCd}
+                  style={{
+                    backgroundColor:
+                      selectedIdx === idx ? '#f1f1f1' : 'transparent',
+                  }}
+                >
+                  <a href="/">{value.sickNm}</a>
+                </ResultsList>
+              ))}
+            </ResultsContainer>
           ) : searchHistory.length > 0 ? (
-            searchHistory.map((value, idx) => (
-              <NoRecommend key={idx}>
-                <a href="/">{value}</a>
-              </NoRecommend>
-            ))
+            <ResultsContainer>
+              <RecommendTitle>최근 검색어</RecommendTitle>
+              {searchHistory.map((value, idx) => (
+                <ResultsList key={idx}>
+                  <a href="/">{value}</a>
+                </ResultsList>
+              ))}
+            </ResultsContainer>
           ) : (
-            <NoRecommend>검색어가 없습니다.</NoRecommend>
+            <ResultsContainer>
+              <RecommendTitle>최근 검색어</RecommendTitle>
+              <NoRecommend>최근 검색어가 없습니다.</NoRecommend>
+            </ResultsContainer>
           )}
-        </ResultsContainer>
+        </>
       ) : null}
     </Container>
   );
