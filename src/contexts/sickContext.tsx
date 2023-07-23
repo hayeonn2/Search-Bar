@@ -1,4 +1,4 @@
-import { getData } from '@/api/axiosClient';
+import { getData } from '@/api/searchApi';
 import { useState, createContext, ReactNode } from 'react';
 
 type SickProviderProps = {

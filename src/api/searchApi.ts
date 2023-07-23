@@ -1,6 +1,6 @@
 import { RecommendValueType } from '@/contexts/sickContext';
-import { getCachedData, setCachedData } from './cache';
-import { BASE_URL, api } from './api';
+import { getCachedData, setCachedData } from '../utils/cache';
+import { BASE_URL, api } from './apiClient';
 
 export const getData = async (
   search: string,
