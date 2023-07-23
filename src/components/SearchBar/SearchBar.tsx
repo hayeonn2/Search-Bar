@@ -82,17 +82,17 @@ export function SearchBar() {
   };
 
   // 컴포넌트 마운트 시 로컬 스토리지에서 검색 기록 가져오기
-  useEffect(() => {
-    const storedSearchHistory = localStorage.getItem('searchHistory');
-    if (storedSearchHistory) {
-      setSearchHistory(JSON.parse(storedSearchHistory));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedSearchHistory = localStorage.getItem('searchHistory');
+  //   if (storedSearchHistory) {
+  //     setSearchHistory(JSON.parse(storedSearchHistory));
+  //   }
+  // }, []);
 
   // 검색 기록이 변경될 때마다 로컬 스토리지에 저장
-  useEffect(() => {
-    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-  }, [searchHistory]);
+  // useEffect(() => {
+  //   localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+  // }, [searchHistory]);
 
   return (
     <Container>
