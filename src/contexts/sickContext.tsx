@@ -24,9 +24,10 @@ function SickProvider({ children }: SickProviderProps) {
 
   const fetchRecommendData = async (search: string) => {
     try {
-      let data = await getData(search);
+      const data = await getData(search);
+      const sliceData = data.length >= 7 ? data.slice(0, 7) : data;
       console.info('calling api');
-      setRecommendValue(data);
+      setRecommendValue(sliceData);
       return data;
     } catch (error) {
       console.log(error);
