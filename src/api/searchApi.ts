@@ -8,15 +8,14 @@ export const getData = async (
   try {
     const cacheName = `searchList`;
     const url = `${BASE_URL}?q=${search}`;
-
     const cacheData = await getCachedData(cacheName, url);
-
-    if (cacheData) {
-      return cacheData;
-    }
 
     if (search === '') {
       return [];
+    }
+
+    if (cacheData) {
+      return cacheData;
     }
 
     const response = await api.get(url, {
@@ -25,13 +24,13 @@ export const getData = async (
       },
     });
 
+    console.info('calling api');
     await setCachedData(cacheName, url, response);
 
     const filteredData = response.data.filter((item: RecommendValueType) =>
       item.sickNm.includes(search),
     );
-
-    console.log('api에서 가져온 데이터', filteredData);
+    // console.log('api에서 가져온 데이터', filteredData);
     return filteredData;
   } catch (err) {
     console.log(err);

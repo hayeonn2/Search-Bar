@@ -26,7 +26,6 @@ function SickProvider({ children }: SickProviderProps) {
     try {
       const data = await getData(search);
       const sliceData = data.length >= 7 ? data.slice(0, 7) : data;
-      console.info('calling api');
       setRecommendValue(sliceData);
       return data;
     } catch (error) {
