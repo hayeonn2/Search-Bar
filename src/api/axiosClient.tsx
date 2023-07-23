@@ -1,18 +1,15 @@
-import axios, { AxiosAdapter } from 'axios';
 import { RecommendValueType } from '@/contexts/sickContext';
-import { cacheAdapterEnhancer } from 'axios-extensions';
 import { getCachedData, setCachedData } from './cache';
-
-const base_url = 'http://localhost:4000/sick';
+import { BASE_URL, api } from './api';
 
 export const getData = async (
   search: string,
 ): Promise<RecommendValueType[]> => {
   try {
-    const cacheName = `cache_${search}`;
-    const url = `${base_url}?q=${search}`;
+    const cacheName = `searchList`;
+    const url = `${BASE_URL}?q=${search}`;
 
-    let cacheData = await getCachedData(cacheName, url);
+    const cacheData = await getCachedData(cacheName, url);
 
     if (cacheData) {
       return cacheData;
@@ -21,10 +18,8 @@ export const getData = async (
     if (search === '') {
       return [];
     }
-    const response = await axios.get(`${base_url}?q=${search}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+
+    const response = await api.get(url, {
       params: {
         name: search,
       },
@@ -32,10 +27,12 @@ export const getData = async (
 
     await setCachedData(cacheName, url, response);
 
-    console.log(response.data);
-    return response.data
-      .filter((item: RecommendValueType) => item.sickNm.includes(search))
-      .slice(0, 7);
+    const filteredData = response.data.filter((item: RecommendValueType) =>
+      item.sickNm.includes(search),
+    );
+
+    console.log('api에서 가져온 데이터', filteredData);
+    return filteredData;
   } catch (err) {
     console.log(err);
     return [];
